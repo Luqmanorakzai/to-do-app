@@ -19,6 +19,29 @@ class _SigninScreenState extends State<SigninScreen> {
   var isLoading = false;
   final _formKey = GlobalKey<FormState>();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+  void sigIn() {
+    setState(() {
+      isLoading = true;
+    });
+    firebaseAuth.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordlController.text.trim()).then((value){
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+            return HomeScreen();
+          }));
+          setState(() {
+            isLoading = false;
+          });
+
+    }).onError((error, stackTrace) {
+      ToastPupop().toastShow(error, Colors.black, Colors.white);
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -138,7 +161,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       color: Colors.black45,
                     ),
                     Gap(2),
-                    Text(
+                    const Text(
                       'or',
                       style: TextStyle(color: Colors.black),
                     ),
@@ -315,32 +338,35 @@ class _SigninScreenState extends State<SigninScreen> {
                   isloading: isLoading,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      firebaseAuth
-                          .signInWithEmailAndPassword(
-                              email: emailController.text.trim(),
-                              password: passwordlController.text.trim())
-                          .then((value) {
-                        // show toast msg here before dismiss the msg
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) {
-                          return const HomeScreen();
-                        }));
-                        ToastPupop().toastShow('Signed In successfully',
-                            Colors.black, Colors.white);
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }).onError((error, value) {
-                        //throw error here from server side through
-                        ToastPupop().toastShow(error, Colors.red, Colors.white);
-                        setState(() {
-                          isLoading = false;
-                        });
-                      });
+                      sigIn();
                     }
+                    // if (_formKey.currentState!.validate()) {
+                    //   setState(() {
+                    //     isLoading = true;
+                    //   });
+                    //   firebaseAuth
+                    //       .signInWithEmailAndPassword(
+                    //           email: emailController.text.trim(),
+                    //           password: passwordlController.text.trim())
+                    //       .then((value) {
+                    //     // show toast msg here before dismiss the msg
+                    //     Navigator.of(context).pushReplacement(
+                    //         MaterialPageRoute(builder: (context) {
+                    //       return const HomeScreen();
+                    //     }));
+                    //     ToastPupop().toastShow('Signed In successfully',
+                    //         Colors.black, Colors.white);
+                    //     setState(() {
+                    //       isLoading = false;
+                    //     });
+                    //   }).onError((error, value) {
+                    //     //throw error here from server side through
+                    //     ToastPupop().toastShow(error, Colors.red, Colors.white);
+                    //     setState(() {
+                    //       isLoading = false;
+                    //     });
+                    //   });
+                    // }
                   },
                 ),
 
