@@ -6,16 +6,15 @@ import 'package:todo_app/custom_widget/custom_auth_button.dart';
 import 'package:todo_app/screen/home_screen.dart';
 import 'package:todo_app/utility/toas_message.dart';
 
+
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
-
   @override
   State<SigninScreen> createState() => _SigninScreenState();
 }
-
 class _SigninScreenState extends State<SigninScreen> {
   var emailController = TextEditingController();
-  var passwordlController = TextEditingController();
+  var passwordController = TextEditingController();
   var isLoading = false;
   final _formKey = GlobalKey<FormState>();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -26,20 +25,22 @@ class _SigninScreenState extends State<SigninScreen> {
     });
     firebaseAuth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
-        password: passwordlController.text.trim()).then((value){
+        password: passwordController.text.trim()).then((value){
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
             return HomeScreen();
           }));
+          ToastPupop().toastShow('Signed In successfully',
+                     Colors.black, Colors.white);
           setState(() {
             isLoading = false;
           });
-
     }).onError((error, stackTrace) {
-      ToastPupop().toastShow(error, Colors.black, Colors.white);
-      setState(() {
-        isLoading = false;
-      });
+      ToastPupop().toastShow(error.toString(), Colors.black, Colors.white);
+        setState(() {
+          isLoading = false;
+        });
     });
+
   }
 
   @override
@@ -128,7 +129,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     }
                     return null;
                   },
-                  controller: passwordlController,
+                  controller: passwordController,
                   keyboardType: TextInputType.text,
                   obscureText: true,
                   style: const TextStyle(color: Colors.black),

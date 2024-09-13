@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,9 @@ import 'package:gap/gap.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:todo_app/auth_directory/sign_in/signin_screen.dart';
 import 'package:todo_app/custom_widget/custom_auth_button.dart';
+import 'package:todo_app/screen/home_screen.dart';
 import 'package:todo_app/utility/toas_message.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -21,38 +24,84 @@ class _SignupScreenState extends State<SignupScreen> {
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  var isloading = false;
+  var isLoading = false;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
   //signup function
   void signUp() {
     setState(() {
-      isloading = true;
+      isLoading = true;
     });
+
     firebaseAuth
         .createUserWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim())
         .then((value) {
-      // show toast msg here before dismiss the msg
+
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) {
-        return SigninScreen();
+        return HomeScreen();
       }));
       ToastPupop()
           .toastShow('Signed up successfully', Colors.black, Colors.white);
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
     }).onError((Error, value) {
       //throw error here from server side through
       ToastPupop().toastShow(Error, Colors.red, Colors.white);
       setState(() {
-        isloading = false;
+        isLoading = false;
       });
     });
+
   }
 
+
+
+  // void signUp() {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //
+  //   // Firebase Auth sign-up
+  //   firebaseAuth
+  //       .createUserWithEmailAndPassword(
+  //     email: emailController.text.trim(),
+  //     password: passwordController.text.trim(),
+  //   )
+  //       .then((userCredential) {
+  //         FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //     // After user signs up successfully, store additional user data in Firestore
+  //     firestore.collection('users').doc(userCredential.user!.uid).set({
+  //       'username': nameController.text.trim(), // Storing username
+  //       'email': emailController.text.trim(), // Storing email
+  //       'uid': userCredential.user!.uid, // Storing user ID
+  //     }).then((value) {
+  //       // After storing data in Firestore, navigate to SigninScreen
+  //       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+  //         return SigninScreen();
+  //       }));
+  //
+  //       ToastPupop().toastShow('Signed up successfully', Colors.black, Colors.white);
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //     }).catchError((error) {
+  //       // Handle Firestore errors
+  //       ToastPupop().toastShow('Failed to store user data: $error', Colors.red, Colors.white);
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //     });
+  //   }).catchError((error) {
+  //     // Handle Firebase Auth errors
+  //     ToastPupop().toastShow(error.toString(), Colors.red, Colors.white);
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -450,8 +499,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   CustomAuthBtn(
                     text: 'Sign Up',
                     fontSize: 20.0,
-                    isloading: isloading,
-                    onPressed: () {
+                    isloading: isLoading,
+                    onPressed: () async{
                       // if(_formKey.currentState!.validate()){
                       // if(passwordController.text!= confirmPasswordController.text){
                       // ToastPupop().toastShow('Passwords do not matched', Colors.black, Colors.white);
@@ -484,6 +533,27 @@ class _SignupScreenState extends State<SignupScreen> {
                         //   isloading = false;
                         // });
                       }
+                      // real time database to
+                      late DatabaseReference userNameRF ;
+                      userNameRF = FirebaseDatabase.instance.ref('DataAdded');
+                      String userId = DateTime.now().millisecondsSinceEpoch.toString();
+                      userNameRF.child(userId).set({
+                        'userName':nameController.text.trim(),
+                        'userId': userId,
+                      }).then((value) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }).onError((error, stackTrace) {
+                        ToastPupop().toastShow(error, Colors.black, Colors.white);
+                        setState(() {
+                          isLoading= false;
+                        });
+
+                      });
+
+
+
                     }, // onpressed
                   ),
                   Gap(10),
