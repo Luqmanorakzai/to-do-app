@@ -5,12 +5,14 @@ class CustomAuthBtn extends StatelessWidget {
   final text;
   final fontSize;
   final isloading;
+  final height;
+  final width;
   const CustomAuthBtn(
       {super.key,
       this.onPressed,
       this.text,
       this.fontSize,
-      this.isloading = false});
+      this.isloading = false, this.height, this.width});
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -18,8 +20,8 @@ class CustomAuthBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: screenHeight * 0.07,
-        width: double.infinity,
+        height: height,
+        width: width,
         decoration: BoxDecoration(
             color: Colors.black, borderRadius: BorderRadius.circular(10)),
         child: Center(

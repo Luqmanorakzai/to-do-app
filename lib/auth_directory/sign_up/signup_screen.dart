@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:ndialog/ndialog.dart';
 import 'package:todo_app/auth_directory/sign_in/signin_screen.dart';
 import 'package:todo_app/custom_widget/custom_auth_button.dart';
 import 'package:todo_app/screen/home_screen.dart';
@@ -23,15 +20,17 @@ class _SignupScreenState extends State<SignupScreen> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
-  var _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   var isLoading = false;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  late DatabaseReference dataRef = FirebaseDatabase.instance.ref('udb');
+  
+  
   //signup function
   void signUp() {
     setState(() {
       isLoading = true;
     });
-
     firebaseAuth
         .createUserWithEmailAndPassword(
             email: emailController.text.trim(),
@@ -40,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) {
-        return HomeScreen();
+        return const  HomeScreen();
       }));
       ToastPupop()
           .toastShow('Signed up successfully', Colors.black, Colors.white);
@@ -55,6 +54,11 @@ class _SignupScreenState extends State<SignupScreen> {
       });
     });
 
+  }
+  
+  void setUserName(){
+    dataRef.child('');
+    
   }
 
 
@@ -497,36 +501,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   // ),
                   //// custom button
                   CustomAuthBtn(
+                   height: 50.h,
+                    width: double.infinity,
                     text: 'Sign Up',
                     fontSize: 20.0,
                     isloading: isLoading,
                     onPressed: () async{
-                      // if(_formKey.currentState!.validate()){
-                      // if(passwordController.text!= confirmPasswordController.text){
-                      // ToastPupop().toastShow('Passwords do not matched', Colors.black, Colors.white);
-                      // }
-                      //                   setState(() {
-                      //                     isloading = true;
-                      //                   });
-                      //                   firebaseAuth.createUserWithEmailAndPassword(
-                      //                       email: emailController.text.trim(),
-                      //                       password: passwordController.text.trim()).then((value) {
-                      //                     // show toast msg here before dismiss the msg
-                      //                     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-                      //                       return SigninScreen();
-                      //                     }));
-                      //                     ToastPupop().toastShow('Signed up successfully', Colors.black, Colors.white);
-                      //                     setState(() {
-                      //                       isloading=false;
-                      //                     });
-                      //                   }).onError((Error, value) {
-                      //                     //throw error here from server side through
-                      //                     ToastPupop().toastShow(Error, Colors.red, Colors.white);
-                      //                     setState(() {
-                      //                       isloading = false;
-                      //                     });
-                      //                   });
-                      ///////////////////////
                       if (_formKey.currentState!.validate()) {
                         signUp();
                         // setState(() {
@@ -534,29 +514,26 @@ class _SignupScreenState extends State<SignupScreen> {
                         // });
                       }
                       // real time database to
-                      late DatabaseReference userNameRF ;
-                      userNameRF = FirebaseDatabase.instance.ref('DataAdded');
-                      String userId = DateTime.now().millisecondsSinceEpoch.toString();
-                      userNameRF.child(userId).set({
-                        'userName':nameController.text.trim(),
-                        'userId': userId,
-                      }).then((value) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }).onError((error, stackTrace) {
-                        ToastPupop().toastShow(error, Colors.black, Colors.white);
-                        setState(() {
-                          isLoading= false;
-                        });
-
-                      });
-
-
+                      // late DatabaseReference userdataRef ;
+                      // userdataRef = FirebaseDatabase.instance.ref('udb');
+                      // String userId = DateTime.now().millisecondsSinceEpoch.toString();
+                      // userdataRef.child(userId).set({
+                      //   'userName':nameController.text.trim(),
+                      //   'userId': userId,
+                      // }).then((value) {
+                      //   setState(() {
+                      //     isLoading = false;
+                      //   });
+                      // }).onError((error, stackTrace) {
+                      //   ToastPupop().toastShow(error, Colors.black, Colors.white);
+                      //   setState(() {
+                      //     isLoading= false;
+                      //   });
+                      // });
 
                     }, // onpressed
                   ),
-                  Gap(10),
+                  const Gap(10),
                   const Text(
                     'Already have an account?',
                     style: TextStyle(

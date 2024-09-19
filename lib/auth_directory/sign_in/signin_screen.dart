@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:todo_app/auth_directory/sign_up/signup_screen.dart';
 import 'package:todo_app/custom_widget/custom_auth_button.dart';
@@ -99,15 +100,15 @@ class _SigninScreenState extends State<SigninScreen> {
                       // label: Text('text'),
                       hintText: 'abc@gmail.com',
                       contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                      hintStyle: TextStyle(color: Colors.black45),
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                      hintStyle: const TextStyle(color: Colors.black45),
                       enabledBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.black45, width: 2),
+                              const BorderSide(color: Colors.black45, width: 2),
                           borderRadius: BorderRadius.circular(8)),
                       focusedBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.black45, width: 2),
+                              const BorderSide(color: Colors.black45, width: 2),
                           borderRadius: BorderRadius.circular(8))),
                 ),
                 Gap(8),
@@ -334,6 +335,8 @@ class _SigninScreenState extends State<SigninScreen> {
 
                 // custom btn gose from here
                 CustomAuthBtn(
+                  height: 50.h,
+                  width: double.infinity,
                   text: 'Sign In',
                   fontSize: 20.0,
                   isloading: isLoading,
